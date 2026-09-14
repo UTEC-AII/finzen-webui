@@ -8,12 +8,11 @@ import { useUser } from "@/hooks/useUser";
 import { api, endpoints } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
 import { useOpenAIKey } from "@/lib/openai-key";
-import type { QueryResponse, SourceItem } from "@/types";
+import type { QueryResponse } from "@/types";
 
 interface Message {
   role: "user" | "ai";
   text: string;
-  sources?: SourceItem[];
 }
 
 const SUGGESTIONS = {
@@ -51,10 +50,7 @@ export default function AssistantPage() {
         user_id: user.id,
         question,
       });
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", text: data.answer, sources: data.sources },
-      ]);
+      setMessages((prev) => [...prev, { role: "ai", text: data.answer }]);
     } catch {
       setMessages((prev) => [...prev, { role: "ai", text: t("assistant.error") }]);
     } finally {
@@ -97,23 +93,6 @@ export default function AssistantPage() {
               >
                 {message.text}
               </div>
-              {message.sources && message.sources.length > 0 && (
-                <div className="mt-2 rounded-xl border border-border-soft bg-surface px-3 py-2">
-                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted">
-                    {t("assistant.sources")}
-                  </p>
-                  <ul className="space-y-1">
-                    {message.sources.map((source) => (
-                      <li
-                        key={source.id}
-                        className="mono text-[11px] leading-snug text-text-soft"
-                      >
-                        {source.text}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </div>
           </div>
         ))}
