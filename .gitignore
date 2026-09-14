@@ -10,8 +10,5 @@ out/
 .env.local
 .env.*.local
 
-# Secretos guardados en tiempo de ejecución (p. ej. la clave de OpenAI).
-.secrets/
-
 # Sistema operativo.
 .DS_Store

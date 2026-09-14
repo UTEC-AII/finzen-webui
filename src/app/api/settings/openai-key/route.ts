@@ -1,48 +1,40 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { TOKEN_COOKIE } from "@/lib/constants";
-import { clearOpenAIKey, maskKey, readOpenAIKey, saveOpenAIKey } from "@/lib/secrets";
 
-// Solo usuarios con sesión pueden configurar la clave.
-async function hasSession(): Promise<boolean> {
+// Proxy al ai-service: la clave de OpenAI se guarda en la base SQLite del backend
+// (persistente en el volumen EBS). El navegador nunca recibe la clave completa.
+async function forward(method: string, body?: unknown) {
   const store = await cookies();
-  return Boolean(store.get(TOKEN_COOKIE)?.value);
+  const token = store.get(TOKEN_COOKIE)?.value;
+  if (!token) {
+    return NextResponse.json({ detail: "No autorizado" }, { status: 401 });
+  }
+
+  const response = await fetch(`${process.env.AI_API_URL}/settings/openai-key`, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+    cache: "no-store",
+  });
+
+  const data = await response.json().catch(() => ({}));
+  return NextResponse.json(data, { status: response.status });
 }
 
-// Estado: indica si hay clave configurada y su versión enmascarada (nunca la clave).
 export async function GET() {
-  if (!(await hasSession())) {
-    return NextResponse.json({ detail: "No autorizado" }, { status: 401 });
-  }
-  const key = await readOpenAIKey();
-  return NextResponse.json({ configured: Boolean(key), masked: maskKey(key) });
+  return forward("GET");
 }
 
-// Guarda la clave en el servidor (archivo con permisos 600).
+// El panel del cliente usa POST; internamente se guarda con PUT.
 export async function POST(request: Request) {
-  if (!(await hasSession())) {
-    return NextResponse.json({ detail: "No autorizado" }, { status: 401 });
-  }
-
   const body = await request.json().catch(() => ({}));
-  const apiKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
-
-  if (!apiKey.startsWith("sk-") || apiKey.length < 20) {
-    return NextResponse.json(
-      { detail: "La clave debe empezar con 'sk-' y tener una longitud válida" },
-      { status: 400 },
-    );
-  }
-
-  await saveOpenAIKey(apiKey);
-  return NextResponse.json({ configured: true, masked: maskKey(apiKey) });
+  return forward("PUT", body);
 }
 
-// Elimina la clave guardada.
 export async function DELETE() {
-  if (!(await hasSession())) {
-    return NextResponse.json({ detail: "No autorizado" }, { status: 401 });
-  }
-  await clearOpenAIKey();
-  return NextResponse.json({ configured: false, masked: null });
+  return forward("DELETE");
 }

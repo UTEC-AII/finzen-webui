@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { TOKEN_COOKIE } from "@/lib/constants";
-import { readOpenAIKey } from "@/lib/secrets";
 
 // Proxy BFF: recibe las llamadas del navegador, les inyecta el token desde la
 // cookie httpOnly y las reenvía al microservicio correspondiente.
@@ -29,12 +28,6 @@ async function handler(
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
-
-  // Para el ai-service, se inyecta la clave de OpenAI guardada server-side.
-  if (service === "ai") {
-    const openaiKey = (await readOpenAIKey()) || process.env.OPENAI_API_KEY;
-    if (openaiKey) headers["X-OpenAI-Key"] = openaiKey;
-  }
 
   const init: RequestInit = { method: request.method, headers, cache: "no-store" };
   if (request.method !== "GET" && request.method !== "HEAD") {

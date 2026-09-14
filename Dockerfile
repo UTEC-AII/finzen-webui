@@ -26,9 +26,6 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Carpeta para secretos en tiempo de ejecución (clave de OpenAI), propiedad del usuario sin privilegios.
-RUN mkdir -p /app/.secrets && chown -R nextjs:nodejs /app
-
 USER nextjs
 
 EXPOSE 3000
