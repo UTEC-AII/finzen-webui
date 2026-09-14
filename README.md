@@ -122,25 +122,27 @@ Abrir `http://localhost:3000`.
 ## Despliegue en AWS (EC2)
 
 > **Orden:** levanta primero el backend (`finzen-app`), porque este frontend se
-> conecta a su red de Docker.
+> conecta a su red de Docker. Puedes usar **la misma instancia EC2** del backend.
+>
+> **Conexión:** usamos **EC2 Instance Connect** (terminal en el navegador), así que
+> **no necesitas key pair ni `ssh -i`**.
 
-1. **Crear la instancia EC2**
-   - Región: `us-east-1` · AMI: Ubuntu 24.04 LTS · Tipo: `t3.micro`
-   - Asignar **IP elástica**
+1. **Instancia EC2**
+   - Región: `us-east-1` · **AMI:** `cloud.22` (imagen de clase, con Docker/Python/Node
+     preinstalados) o Ubuntu 24.04 LTS · Tipo: `t3.micro`
+   - **Key pair:** ninguno (usaremos Instance Connect) · Asignar **IP elástica**
 
 2. **Security Group** (reglas de entrada)
-   - `22` (SSH) → tu IP
+   - `22` (SSH) → `0.0.0.0/0` *(necesario para EC2 Instance Connect)*
    - `3000` (frontend) → `0.0.0.0/0` *(o `80` si publicas detrás de Nginx)*
 
-3. **Conectarse e instalar Docker**
-
-   ```bash
-   ssh -i "finzen-key.pem" ubuntu@<TU-IP-ELASTICA>
-   sudo apt update && sudo apt install -y git docker.io
-   sudo usermod -aG docker $USER && newgrp docker
-   ```
+3. **Conectarse (sin SSH)**
+   - Consola **EC2** → selecciona la instancia → **Connect** →
+   - pestaña **EC2 Instance Connect** → **Connect**.
 
 4. **Clonar, construir y ejecutar (en la red del backend)**
+
+   > Si la AMI no trae Docker: `sudo apt update && sudo apt install -y git docker.io`
 
    ```bash
    git clone https://github.com/UTEC-AII/finzen-webui.git
