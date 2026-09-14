@@ -1,7 +1,7 @@
 # Prompt del prototipo — FinZen
 
 Prompt usado en herramientas de IA (Figma Make / Lovable / v0) para prototipar la
-interfaz. El prototipo resultante es `FinZen_mockup.html`.
+interfaz. El prototipo resultante es **[`FinZen_mockup.html`](FinZen_mockup.html)** (en esta misma carpeta).
 
 ---
 
