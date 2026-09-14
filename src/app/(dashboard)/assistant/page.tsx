@@ -49,6 +49,7 @@ export default function AssistantPage() {
       const data = await api.post<QueryResponse>(endpoints.ai("/query"), {
         user_id: user.id,
         question,
+        timezone: user.timezone,
       });
       setMessages((prev) => [...prev, { role: "ai", text: data.answer }]);
     } catch {

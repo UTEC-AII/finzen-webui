@@ -38,16 +38,37 @@ export default function DashboardPage() {
     load();
   }, [user]);
 
-  const currency = user?.preferred_currency ?? "PEN";
-  const totalIncome = incomes.reduce((sum, item) => sum + toNumber(item.amount), 0);
-  const totalExpense = expenses.reduce((sum, item) => sum + toNumber(item.amount), 0);
-  const balance = totalIncome - totalExpense;
+  const preferred = user?.preferred_currency ?? "PEN";
+
+  // Monedas presentes en los movimientos, con la preferida primero.
+  const present = Array.from(
+    new Set([...incomes, ...expenses].map((item) => item.currency).filter(Boolean)),
+  );
+  const orderedCurrencies = present.includes(preferred)
+    ? [preferred, ...present.filter((currency) => currency !== preferred)]
+    : present;
+
+  // Totales por moneda (no se mezclan soles con dólares).
+  const totals = orderedCurrencies.map((currency) => {
+    const income = incomes
+      .filter((item) => item.currency === currency)
+      .reduce((sum, item) => sum + toNumber(item.amount), 0);
+    const expense = expenses
+      .filter((item) => item.currency === currency)
+      .reduce((sum, item) => sum + toNumber(item.amount), 0);
+    return { currency, income, expense, balance: income - expense };
+  });
+
+  const mainCurrency = totals[0]?.currency ?? preferred;
+  const mainBalance = totals[0]?.balance ?? 0;
 
   const byCategory = Object.entries(
-    expenses.reduce<Record<string, number>>((acc, item) => {
-      acc[item.category] = (acc[item.category] ?? 0) + toNumber(item.amount);
-      return acc;
-    }, {}),
+    expenses
+      .filter((item) => item.currency === mainCurrency)
+      .reduce<Record<string, number>>((acc, item) => {
+        acc[item.category] = (acc[item.category] ?? 0) + toNumber(item.amount);
+        return acc;
+      }, {}),
   )
     .map(([category, total]) => ({ category, total }))
     .sort((a, b) => b.total - a.total);
@@ -63,22 +84,37 @@ export default function DashboardPage() {
       <Card>
         <p className="mb-2 text-xs text-muted">{t("dashboard.balance")}</p>
         <p className="mono text-[34px] font-bold tracking-tight">
-          <span className="mr-0.5 text-lg font-medium text-muted">{currency}</span>
-          {loading ? "—" : balance.toFixed(2)}
+          <span className="mr-0.5 text-lg font-medium text-muted">{mainCurrency}</span>
+          {loading ? "—" : mainBalance.toFixed(2)}
         </p>
-        <div className="mt-4 flex gap-8 border-t border-border-soft pt-3.5 text-xs text-muted">
-          <div>
-            <span>{t("dashboard.incomes")}</span>
-            <span className="mono mt-0.5 block text-sm font-semibold text-text">
-              {formatAmount(totalIncome, currency, locale)}
-            </span>
-          </div>
-          <div>
-            <span>{t("dashboard.expenses")}</span>
-            <span className="mono mt-0.5 block text-sm font-semibold text-text">
-              {formatAmount(totalExpense, currency, locale)}
-            </span>
-          </div>
+
+        <div className="mt-4 space-y-2 border-t border-border-soft pt-3.5">
+          {totals.length === 0 ? (
+            <p className="text-xs text-muted">
+              {formatAmount(0, preferred, locale)} · {t("dashboard.noMovements")}
+            </p>
+          ) : (
+            totals.map((row) => (
+              <div
+                key={row.currency}
+                className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs"
+              >
+                <span className="font-semibold text-text-soft">{row.currency}</span>
+                <span className="text-muted">
+                  {t("dashboard.incomes")}{" "}
+                  <span className="mono text-text">
+                    {formatAmount(row.income, row.currency, locale)}
+                  </span>
+                </span>
+                <span className="text-muted">
+                  {t("dashboard.expenses")}{" "}
+                  <span className="mono text-text">
+                    {formatAmount(row.expense, row.currency, locale)}
+                  </span>
+                </span>
+              </div>
+            ))
+          )}
         </div>
       </Card>
 
@@ -115,7 +151,10 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
-          <CardTitle>{t("dashboard.expensesByCategory")}</CardTitle>
+          <CardTitle>
+            {t("dashboard.expensesByCategory")}
+            {totals.length > 1 ? ` · ${mainCurrency}` : ""}
+          </CardTitle>
           <CategoryChart data={byCategory} />
         </Card>
 
@@ -136,8 +175,8 @@ export default function DashboardPage() {
                       style={{ width: `${(item.total / maxCategory) * 100}%` }}
                     />
                   </span>
-                  <span className="mono w-16 flex-none text-right text-[11.5px] text-muted">
-                    {item.total.toFixed(2)}
+                  <span className="mono w-20 flex-none text-right text-[11.5px] text-muted">
+                    {formatAmount(item.total, mainCurrency, locale)}
                   </span>
                 </div>
               ))}

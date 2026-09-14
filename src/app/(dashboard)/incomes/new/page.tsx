@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { useUser } from "@/hooks/useUser";
 import { api, endpoints } from "@/lib/api";
+import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
+import { DEFAULT_TIMEZONE, todayInTimezone } from "@/lib/timezones";
 
 // Valores de tipo de ingreso que acepta el backend.
 const TYPES = ["Sueldo", "Freelance", "Bono", "Inversion", "Otro"];
@@ -19,11 +21,21 @@ export default function NewIncomePage() {
     type: "Sueldo",
     amount: "",
     currency: user?.preferred_currency ?? "PEN",
-    date: new Date().toISOString().slice(0, 10),
+    date: todayInTimezone(DEFAULT_TIMEZONE),
     description: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Ajusta la fecha por defecto a la zona horaria del usuario cuando carga.
+  useEffect(() => {
+    if (!user) return;
+    setForm((prev) => ({
+      ...prev,
+      currency: user.preferred_currency || prev.currency,
+      date: todayInTimezone(user.timezone || DEFAULT_TIMEZONE),
+    }));
+  }, [user]);
 
   function update(field: keyof typeof form, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -80,11 +92,17 @@ export default function NewIncomePage() {
             />
           </Field>
           <Field label={t("incomeNew.currency")}>
-            <Input
+            <Select
               value={form.currency}
               onChange={(e) => update("currency", e.target.value)}
               required
-            />
+            >
+              {CURRENCIES.map((currency) => (
+                <option key={currency} value={currency}>
+                  {currency}
+                </option>
+              ))}
+            </Select>
           </Field>
         </div>
 

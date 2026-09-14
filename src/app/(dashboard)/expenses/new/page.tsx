@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { useUser } from "@/hooks/useUser";
 import { api, endpoints } from "@/lib/api";
+import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
+import { DEFAULT_TIMEZONE, todayInTimezone } from "@/lib/timezones";
 import type { CategoryList } from "@/types";
 
 export default function NewExpensePage() {
@@ -18,11 +20,21 @@ export default function NewExpensePage() {
     category: "",
     amount: "",
     currency: user?.preferred_currency ?? "PEN",
-    date: new Date().toISOString().slice(0, 10),
+    date: todayInTimezone(DEFAULT_TIMEZONE),
     description: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Ajusta la fecha por defecto a la zona horaria del usuario cuando carga.
+  useEffect(() => {
+    if (!user) return;
+    setForm((prev) => ({
+      ...prev,
+      currency: user.preferred_currency || prev.currency,
+      date: todayInTimezone(user.timezone || DEFAULT_TIMEZONE),
+    }));
+  }, [user]);
 
   useEffect(() => {
     api
@@ -93,11 +105,17 @@ export default function NewExpensePage() {
             />
           </Field>
           <Field label={t("expenseNew.currency")}>
-            <Input
+            <Select
               value={form.currency}
               onChange={(e) => update("currency", e.target.value)}
               required
-            />
+            >
+              {CURRENCIES.map((currency) => (
+                <option key={currency} value={currency}>
+                  {currency}
+                </option>
+              ))}
+            </Select>
           </Field>
         </div>
 

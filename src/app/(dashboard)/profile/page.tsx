@@ -8,10 +8,10 @@ import { Field, Input, Select } from "@/components/ui/Field";
 import { useUser } from "@/hooks/useUser";
 import { api, endpoints } from "@/lib/api";
 import { USER_COOKIE } from "@/lib/constants";
+import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
+import { DEFAULT_TIMEZONE, TIMEZONES } from "@/lib/timezones";
 import type { User } from "@/types";
-
-const CURRENCIES = ["PEN", "USD", "EUR", "MXN", "COP", "CLP"];
 
 export default function ProfilePage() {
   const user = useUser();
@@ -19,6 +19,7 @@ export default function ProfilePage() {
   const [form, setForm] = useState({
     name: "",
     preferred_currency: "PEN",
+    timezone: DEFAULT_TIMEZONE,
     monthly_savings_goal: "0.00",
   });
   const [message, setMessage] = useState("");
@@ -29,6 +30,7 @@ export default function ProfilePage() {
     setForm({
       name: user.name,
       preferred_currency: user.preferred_currency,
+      timezone: user.timezone || DEFAULT_TIMEZONE,
       monthly_savings_goal: user.monthly_savings_goal,
     });
   }, [user]);
@@ -46,6 +48,7 @@ export default function ProfilePage() {
       const updated = await api.put<User>(endpoints.users(`/users/${user.id}`), {
         name: form.name,
         preferred_currency: form.preferred_currency,
+        timezone: form.timezone,
         monthly_savings_goal: form.monthly_savings_goal || "0",
       });
       // Se actualiza la cookie legible para reflejar los cambios en la interfaz.
@@ -88,6 +91,19 @@ export default function ProfilePage() {
             {CURRENCIES.map((currency) => (
               <option key={currency} value={currency}>
                 {currency}
+              </option>
+            ))}
+          </Select>
+        </Field>
+
+        <Field label={t("profile.timezone")}>
+          <Select
+            value={form.timezone}
+            onChange={(e) => update("timezone", e.target.value)}
+          >
+            {TIMEZONES.map((tz) => (
+              <option key={tz.value} value={tz.value}>
+                {tz.label}
               </option>
             ))}
           </Select>

@@ -5,6 +5,8 @@ export interface User {
   name: string;
   email: string;
   preferred_currency: string;
+  // Zona horaria IANA del usuario (para fechas locales). Ej: "America/Lima".
+  timezone: string;
   // Los montos llegan como string (Decimal serializado por Pydantic).
   monthly_savings_goal: string;
   created_at: string;

@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HeaderControls } from "@/components/layout/HeaderControls";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
+import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
+import { DEFAULT_TIMEZONE, detectTimezone, TIMEZONES } from "@/lib/timezones";
 
 const GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/";
-const CURRENCIES = ["PEN", "USD", "EUR", "MXN", "COP", "CLP"];
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,7 +20,16 @@ export default function RegisterPage() {
     email: "",
     password: "",
     preferred_currency: "PEN",
+    timezone: DEFAULT_TIMEZONE,
   });
+
+  // Se detecta la zona horaria del navegador al montar (evita desajuste de hidratación).
+  useEffect(() => {
+    const detected = detectTimezone();
+    if (TIMEZONES.some((tz) => tz.value === detected)) {
+      setForm((prev) => ({ ...prev, timezone: detected }));
+    }
+  }, []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -84,18 +94,32 @@ export default function RegisterPage() {
             required
           />
         </Field>
-        <Field label={t("register.currency")}>
-          <Select
-            value={form.preferred_currency}
-            onChange={(e) => update("preferred_currency", e.target.value)}
-          >
-            {CURRENCIES.map((currency) => (
-              <option key={currency} value={currency}>
-                {currency}
-              </option>
-            ))}
-          </Select>
-        </Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label={t("register.currency")}>
+            <Select
+              value={form.preferred_currency}
+              onChange={(e) => update("preferred_currency", e.target.value)}
+            >
+              {CURRENCIES.map((currency) => (
+                <option key={currency} value={currency}>
+                  {currency}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label={t("register.timezone")}>
+            <Select
+              value={form.timezone}
+              onChange={(e) => update("timezone", e.target.value)}
+            >
+              {TIMEZONES.map((tz) => (
+                <option key={tz.value} value={tz.value}>
+                  {tz.label}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        </div>
 
         {error && <p className="mb-3 text-xs text-red-400">{error}</p>}
 
