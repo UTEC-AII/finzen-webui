@@ -159,6 +159,9 @@ const DICT: Record<Lang, Record<string, string>> = {
     "openai.invalid": "La clave no es válida.",
     "openai.saved": "Clave guardada. El asistente usará OpenAI.",
     "openai.removed": "Clave eliminada.",
+    "openai.createKey": "Crear mi API key en OpenAI",
+    "openai.createKeyHint":
+      "Necesitas una cuenta en platform.openai.com. Crea tu clave y pégala aquí.",
   },
   en: {
     "nav.dashboard": "Dashboard",
@@ -302,6 +305,9 @@ const DICT: Record<Lang, Record<string, string>> = {
     "openai.invalid": "The key is not valid.",
     "openai.saved": "Key saved. The assistant will use OpenAI.",
     "openai.removed": "Key removed.",
+    "openai.createKey": "Create my OpenAI API key",
+    "openai.createKeyHint":
+      "You need an account on platform.openai.com. Create your key and paste it here.",
   },
 };
 

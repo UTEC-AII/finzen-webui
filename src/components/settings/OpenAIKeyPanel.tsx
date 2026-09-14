@@ -72,6 +72,16 @@ export function OpenAIKeyPanel() {
       {open && (
         <div className="mt-3 space-y-2">
           <p className="text-muted">{t("openai.desc")}</p>
+          <p className="text-muted">{t("openai.createKeyHint")}</p>
+          <a
+            href="https://platform.openai.com/api-keys"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-sm border border-border px-3 py-1.5 font-semibold text-text transition hover:bg-surface-2"
+          >
+            {t("openai.createKey")}
+            <span aria-hidden="true">↗</span>
+          </a>
           <Input
             type="password"
             value={value}
