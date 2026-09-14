@@ -142,7 +142,9 @@ Abrir `http://localhost:3000`.
 
 4. **Clonar, construir y ejecutar (en la red del backend)**
 
-   > Si la AMI no trae Docker: `sudo apt update && sudo apt install -y git docker.io`
+   > Si no usas la AMI `cloud.22` y no tienes Docker, sigue la sección
+   > **"Alternativa: Ubuntu desde cero"** en el README de
+   > [finzen-app](https://github.com/UTEC-AII/finzen-app#alternativa-ubuntu-desde-cero-sin-la-ami-cloud22).
 
    ```bash
    git clone https://github.com/UTEC-AII/finzen-webui.git
