@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tokens de diseño de FinZen. Tema oscuro por defecto; .light sobreescribe. */
+:root {
+  --bg: #000000;
+  --surface: #111113;
+  --surface-2: #1b1b1e;
+  --surface-3: #242428;
+  --border: #2a2a2e;
+  --border-soft: #1e1e22;
+  --text: #fafafa;
+  --text-soft: #c9c9ce;
+  --muted: #8b8b93;
+  --muted-2: #5a5a61;
+  --primary: #ffffff;
+  --primary-fg: #000000;
+  --header-bg: rgba(0, 0, 0, 0.85);
+  --chart-1: #ffffff;
+  --chart-2: #c9c9ce;
+  --chart-3: #8b8b93;
+  --chart-4: #5a5a61;
+  --chart-5: #3a3a3f;
+  --chart-6: #2a2a2e;
+  --chart-7: #1b1b1e;
+  --chart-8: #111113;
+  --accent: #22c55e;
+}
+
+html.light {
+  --bg: #ffffff;
+  --surface: #f5f5f7;
+  --surface-2: #ececf0;
+  --surface-3: #e1e1e6;
+  --border: #d9d9df;
+  --border-soft: #ebebef;
+  --text: #0f0f12;
+  --text-soft: #33333a;
+  --muted: #6b6b73;
+  --muted-2: #9a9aa2;
+  --primary: #111114;
+  --primary-fg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --chart-1: #111114;
+  --chart-2: #33333a;
+  --chart-3: #6b6b73;
+  --chart-4: #9a9aa2;
+  --chart-5: #b8b8c0;
+  --chart-6: #d0d0d8;
+  --chart-7: #e1e1e6;
+  --chart-8: #ececf0;
+  --accent: #16a34a;
+}
+
+*, ::before, ::after {
+  border-color: var(--border);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Fuente display pixel/retro (VT323), igual que en quartopress. */
+.font-display {
+  font-family: "VT323", "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Wordmark de FinZen: VT323 engrosada, en blanco y negro (sin color). */
+.wordmark {
+  font-family: "VT323", "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700;
+  -webkit-text-stroke: 0.6px currentColor;
+  letter-spacing: 0.01em;
+}
+
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}

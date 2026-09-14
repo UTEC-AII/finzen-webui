@@ -1,0 +1,17 @@
+# Dependencias.
+node_modules/
+
+# Build de Next.js.
+.next/
+out/
+
+# Variables de entorno (los secretos no se versionan).
+.env
+.env.local
+.env.*.local
+
+# Secretos guardados en tiempo de ejecución (p. ej. la clave de OpenAI).
+.secrets/
+
+# Sistema operativo.
+.DS_Store

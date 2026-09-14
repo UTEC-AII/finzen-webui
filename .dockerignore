@@ -1,0 +1,15 @@
+# Dependencias y build locales (se reconstruyen dentro de la imagen).
+node_modules/
+.next/
+out/
+
+# Variables de entorno y secretos.
+.env
+.env.local
+.env.*.local
+
+# Control de versiones y sistema operativo.
+.git/
+.gitignore
+.DS_Store
+README.md
