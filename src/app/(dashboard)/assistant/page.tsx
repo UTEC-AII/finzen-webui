@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { OpenAIKeyPanel } from "@/components/settings/OpenAIKeyPanel";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Field";
 import { useUser } from "@/hooks/useUser";
@@ -39,8 +39,9 @@ export default function AssistantPage() {
   const [reindexing, setReindexing] = useState(false);
   const [reindexMsg, setReindexMsg] = useState("");
 
-  const greeting = t("assistant.greeting");
-  const shown: Message[] = messages.length ? messages : [{ role: "ai", text: greeting }];
+  const shown: Message[] = messages.length
+    ? messages
+    : [{ role: "ai", text: t("assistant.greeting") }];
 
   async function ask(question: string) {
     if (!user || !configured || !question.trim() || loading) return;
@@ -71,10 +72,7 @@ export default function AssistantPage() {
       const data = await api.post<ReindexResponse>(endpoints.ai("/reindex"));
       setReindexMsg(
         data.reindexed > 0
-          ? t("assistant.reindexed", {
-              count: String(data.reindexed),
-              model: data.model,
-            })
+          ? t("assistant.reindexed", { count: String(data.reindexed), model: data.model })
           : t("assistant.reindexNone"),
       );
     } catch (err) {
@@ -90,9 +88,19 @@ export default function AssistantPage() {
   }
 
   return (
-    <div className="mx-auto flex h-[78vh] max-w-2xl flex-col">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">{t("assistant.title")}</h1>
+    <div className="mx-auto flex h-[82vh] max-w-3xl flex-col">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-lg font-bold text-primary-fg">
+            F
+          </span>
+          <div>
+            <h1 className="text-xl font-bold leading-tight">{t("assistant.title")}</h1>
+            <p className="text-xs text-muted">
+              {configured ? t("assistant.online") : t("assistant.offline")}
+            </p>
+          </div>
+        </div>
         <Button
           type="button"
           variant="outline"
@@ -104,41 +112,58 @@ export default function AssistantPage() {
         </Button>
       </div>
 
-      <div className="mb-3 space-y-2">
-        <OpenAIKeyPanel />
-        {reindexMsg && <p className="text-xs text-text-soft">{reindexMsg}</p>}
-      </div>
-
-      {!configured && (
-        <p className="mb-3 rounded-lg border border-border bg-surface px-3.5 py-2.5 text-xs text-muted">
-          {t("assistant.requiresKey")}
+      {reindexMsg && (
+        <p className="mb-3 rounded-lg border border-border bg-surface px-3 py-2 text-xs text-text-soft">
+          {reindexMsg}
         </p>
       )}
 
-      <div className="flex-1 space-y-3 overflow-y-auto rounded-lg border border-border bg-surface p-4">
+      {!configured && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3">
+          <p className="text-xs text-muted">{t("assistant.configureInProfile")}</p>
+          <Link
+            href="/profile"
+            className="rounded-sm bg-primary px-3 py-1.5 text-xs font-semibold text-primary-fg transition hover:opacity-90"
+          >
+            {t("assistant.goToProfile")}
+          </Link>
+        </div>
+      )}
+
+      <div className="flex-1 space-y-4 overflow-y-auto rounded-xl border border-border bg-surface p-4">
         {shown.map((message, index) => (
           <div
             key={index}
-            className={message.role === "user" ? "flex justify-end" : "flex justify-start"}
+            className={message.role === "user" ? "flex justify-end" : "flex justify-start gap-2.5"}
           >
-            <div className="max-w-[85%]">
+            {message.role === "ai" && (
+              <span className="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg border border-border bg-surface-2 text-[11px] font-bold text-text-soft">
+                F
+              </span>
+            )}
+            <div className="max-w-[82%]">
               <div
                 className={
                   message.role === "user"
-                    ? "rounded-lg bg-primary px-3.5 py-2.5 text-sm text-primary-fg"
-                    : "rounded-lg bg-surface-2 px-3.5 py-2.5 text-sm text-text-soft"
+                    ? "rounded-2xl rounded-tr-sm bg-primary px-4 py-2.5 text-sm text-primary-fg"
+                    : "rounded-2xl rounded-tl-sm border border-border-soft bg-surface-2 px-4 py-2.5 text-sm text-text-soft"
                 }
               >
                 {message.text}
               </div>
               {message.sources && message.sources.length > 0 && (
-                <div className="mt-1.5 rounded-lg border border-border-soft bg-surface px-3 py-2 text-[11px] text-muted">
-                  <span className="font-semibold text-text-soft">
+                <div className="mt-2 rounded-xl border border-border-soft bg-surface px-3 py-2">
+                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted">
                     {t("assistant.sources")}
-                  </span>
-                  <ul className="mt-1 space-y-0.5">
+                  </p>
+                  <ul className="space-y-1">
                     {message.sources.map((source) => (
-                      <li key={source.id}>· {source.text}</li>
+                      <li
+                        key={source.id}
+                        className="mono text-[11px] leading-snug text-text-soft"
+                      >
+                        {source.text}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -147,8 +172,11 @@ export default function AssistantPage() {
           </div>
         ))}
         {loading && (
-          <div className="flex justify-start">
-            <div className="animate-pulse rounded-lg bg-surface-2 px-3.5 py-2.5 text-sm text-muted">
+          <div className="flex justify-start gap-2.5">
+            <span className="mt-0.5 grid h-7 w-7 flex-none place-items-center rounded-lg border border-border bg-surface-2 text-[11px] font-bold text-text-soft">
+              F
+            </span>
+            <div className="animate-pulse rounded-2xl rounded-tl-sm bg-surface-2 px-4 py-2.5 text-sm text-muted">
               {t("assistant.thinking")}
             </div>
           </div>
@@ -161,7 +189,7 @@ export default function AssistantPage() {
             key={suggestion}
             onClick={() => ask(suggestion)}
             disabled={loading || !configured}
-            className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-text-soft disabled:opacity-40"
+            className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-text-soft transition hover:text-text disabled:opacity-40"
           >
             {suggestion}
           </button>
@@ -174,8 +202,9 @@ export default function AssistantPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder={t("assistant.placeholder")}
           disabled={loading || !configured}
+          className="rounded-full"
         />
-        <Button type="submit" disabled={loading || !configured}>
+        <Button type="submit" disabled={loading || !configured} className="rounded-full px-5">
           {t("assistant.send")}
         </Button>
       </form>
