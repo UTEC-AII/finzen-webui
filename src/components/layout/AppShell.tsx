@@ -6,10 +6,9 @@ import type { ReactNode } from "react";
 import { HeaderControls } from "@/components/layout/HeaderControls";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/cn";
+import { GITHUB_URL } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
 import { useOpenAIKey } from "@/lib/openai-key";
-
-const GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const user = useUser();

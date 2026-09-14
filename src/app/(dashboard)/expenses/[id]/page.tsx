@@ -25,6 +25,13 @@ export default function ExpenseDetailPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  async function remove() {
+    if (!id) return;
+    await api.del(endpoints.expenses(`/expenses/${id}`));
+    router.push("/expenses");
+    router.refresh();
+  }
+
   if (loading) return <p className="text-sm text-muted">{t("common.loading")}</p>;
   if (!expense) return <p className="text-sm text-muted">{t("expenseDetail.notFound")}</p>;
 
@@ -53,9 +60,19 @@ export default function ExpenseDetailPage() {
         </dl>
       </Card>
 
-      <Button variant="outline" block onClick={() => router.push("/expenses")}>
-        {t("common.back")}
-      </Button>
+      <div className="flex gap-3">
+        <Button variant="outline" block onClick={() => router.push("/expenses")}>
+          {t("common.back")}
+        </Button>
+        <Button
+          variant="outline"
+          block
+          className="border-red-500/40 text-red-400"
+          onClick={remove}
+        >
+          {t("common.delete")}
+        </Button>
+      </div>
     </div>
   );
 }

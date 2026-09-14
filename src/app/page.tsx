@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { HeaderControls } from "@/components/layout/HeaderControls";
+import { GITHUB_URL } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
-
-const GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/";
 
 // Página de bienvenida.
 export default function LandingPage() {

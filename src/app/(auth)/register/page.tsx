@@ -6,11 +6,10 @@ import { useEffect, useState } from "react";
 import { HeaderControls } from "@/components/layout/HeaderControls";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
+import { GITHUB_URL } from "@/lib/constants";
 import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
 import { DEFAULT_TIMEZONE, detectTimezone, TIMEZONES } from "@/lib/timezones";
-
-const GITHUB_URL = process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/";
 
 export default function RegisterPage() {
   const router = useRouter();

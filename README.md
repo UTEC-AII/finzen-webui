@@ -100,7 +100,6 @@ docker run -d --name finzen-webui \
   -e INCOME_API_URL=http://nginx/api/incomes \
   -e EXPENSE_API_URL=http://nginx/api/expenses \
   -e AI_API_URL=http://nginx/api/ai \
-  -e NEXT_PUBLIC_GITHUB_URL=https://github.com/UTEC-AII \
   finzen-webui
 ```
 
@@ -114,7 +113,6 @@ Abrir `http://localhost:3000`.
 | `INCOME_API_URL` | URL del income-service | `http://localhost:8002` |
 | `EXPENSE_API_URL` | URL del expense-service | `http://localhost:8003` |
 | `AI_API_URL` | URL del ai-service | `http://localhost:8004` |
-| `NEXT_PUBLIC_GITHUB_URL` | Enlace del icono de GitHub del header | `https://github.com/UTEC-AII` |
 
 > Son variables **de servidor** (sin `NEXT_PUBLIC_`): solo las usa el BFF y **nunca
 > se exponen al navegador**. Con Docker/Nginx, apuntan a `http://nginx/api/...`.
