@@ -8,11 +8,12 @@ import { useUser } from "@/hooks/useUser";
 import { api, endpoints } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
 import { useOpenAIKey } from "@/lib/openai-key";
-import type { QueryResponse } from "@/types";
+import type { QueryResponse, ReindexResponse, SourceItem } from "@/types";
 
 interface Message {
   role: "user" | "ai";
   text: string;
+  sources?: SourceItem[];
 }
 
 const SUGGESTIONS = {
@@ -35,10 +36,11 @@ export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reindexing, setReindexing] = useState(false);
+  const [reindexMsg, setReindexMsg] = useState("");
 
-  // El saludo se agrega al conocer el idioma actual.
   const greeting = t("assistant.greeting");
-  const shown = messages.length ? messages : [{ role: "ai" as const, text: greeting }];
+  const shown: Message[] = messages.length ? messages : [{ role: "ai", text: greeting }];
 
   async function ask(question: string) {
     if (!user || !configured || !question.trim() || loading) return;
@@ -50,11 +52,35 @@ export default function AssistantPage() {
         user_id: user.id,
         question,
       });
-      setMessages((prev) => [...prev, { role: "ai", text: data.answer }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: data.answer, sources: data.sources },
+      ]);
     } catch {
       setMessages((prev) => [...prev, { role: "ai", text: t("assistant.error") }]);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function reindex() {
+    if (!configured || reindexing) return;
+    setReindexing(true);
+    setReindexMsg("");
+    try {
+      const data = await api.post<ReindexResponse>(endpoints.ai("/reindex"));
+      setReindexMsg(
+        data.reindexed > 0
+          ? t("assistant.reindexed", {
+              count: String(data.reindexed),
+              model: data.model,
+            })
+          : t("assistant.reindexNone"),
+      );
+    } catch (err) {
+      setReindexMsg((err as Error).message);
+    } finally {
+      setReindexing(false);
     }
   }
 
@@ -65,10 +91,22 @@ export default function AssistantPage() {
 
   return (
     <div className="mx-auto flex h-[78vh] max-w-2xl flex-col">
-      <h1 className="mb-3 text-2xl font-bold">{t("assistant.title")}</h1>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold">{t("assistant.title")}</h1>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={reindex}
+          disabled={!configured || reindexing}
+          className="px-3 py-2 text-xs"
+        >
+          {reindexing ? t("assistant.reindexing") : t("assistant.reindex")}
+        </Button>
+      </div>
 
-      <div className="mb-3">
+      <div className="mb-3 space-y-2">
         <OpenAIKeyPanel />
+        {reindexMsg && <p className="text-xs text-text-soft">{reindexMsg}</p>}
       </div>
 
       {!configured && (
@@ -83,14 +121,28 @@ export default function AssistantPage() {
             key={index}
             className={message.role === "user" ? "flex justify-end" : "flex justify-start"}
           >
-            <div
-              className={
-                message.role === "user"
-                  ? "max-w-[80%] rounded-lg bg-primary px-3.5 py-2.5 text-sm text-primary-fg"
-                  : "max-w-[80%] rounded-lg bg-surface-2 px-3.5 py-2.5 text-sm text-text-soft"
-              }
-            >
-              {message.text}
+            <div className="max-w-[85%]">
+              <div
+                className={
+                  message.role === "user"
+                    ? "rounded-lg bg-primary px-3.5 py-2.5 text-sm text-primary-fg"
+                    : "rounded-lg bg-surface-2 px-3.5 py-2.5 text-sm text-text-soft"
+                }
+              >
+                {message.text}
+              </div>
+              {message.sources && message.sources.length > 0 && (
+                <div className="mt-1.5 rounded-lg border border-border-soft bg-surface px-3 py-2 text-[11px] text-muted">
+                  <span className="font-semibold text-text-soft">
+                    {t("assistant.sources")}
+                  </span>
+                  <ul className="mt-1 space-y-0.5">
+                    {message.sources.map((source) => (
+                      <li key={source.id}>· {source.text}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         ))}

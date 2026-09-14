@@ -36,7 +36,18 @@ export interface CategoryList {
   categories: string[];
 }
 
+export interface SourceItem {
+  id: string;
+  text: string;
+}
+
 export interface QueryResponse {
   answer: string;
   matched_records: number;
+  sources: SourceItem[];
+}
+
+export interface ReindexResponse {
+  reindexed: number;
+  model: string;
 }

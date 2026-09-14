@@ -134,6 +134,11 @@ const DICT: Record<Lang, Record<string, string>> = {
     "assistant.disabled": "Configura tu clave de OpenAI para usar el asistente.",
     "assistant.requiresKey":
       "El asistente está deshabilitado. Agrega tu clave de OpenAI aquí arriba para activarlo.",
+    "assistant.reindex": "Re-indexar movimientos",
+    "assistant.reindexing": "Re-indexando...",
+    "assistant.reindexed": "Re-indexados {count} movimientos (modelo: {model}).",
+    "assistant.reindexNone": "Todo ya estaba actualizado.",
+    "assistant.sources": "Basado en:",
 
     "openai.title": "Clave de OpenAI",
     "openai.desc":
@@ -265,6 +270,11 @@ const DICT: Record<Lang, Record<string, string>> = {
     "assistant.disabled": "Set your OpenAI key to use the assistant.",
     "assistant.requiresKey":
       "The assistant is disabled. Add your OpenAI key above to enable it.",
+    "assistant.reindex": "Re-index records",
+    "assistant.reindexing": "Re-indexing...",
+    "assistant.reindexed": "Re-indexed {count} records (model: {model}).",
+    "assistant.reindexNone": "Everything was already up to date.",
+    "assistant.sources": "Based on:",
 
     "openai.title": "OpenAI key",
     "openai.desc":
