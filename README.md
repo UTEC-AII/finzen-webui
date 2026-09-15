@@ -126,7 +126,7 @@ Abrir `http://localhost:3000`.
 > **no necesitas key pair ni `ssh -i`**.
 
 1. **Instancia EC2**
-   - Región: `us-east-1` · **AMI:** `cloud.22` (imagen de clase, con Docker/Python/Node
+   - Región: `us-east-1` · **AMI:** `Cloud9Ubuntu22` (imagen de clase, con Docker/Python/Node
      preinstalados) o Ubuntu 24.04 LTS · Tipo: `t3.micro`
    - **Key pair:** ninguno (usaremos Instance Connect) · Asignar **IP elástica**
 
@@ -140,9 +140,9 @@ Abrir `http://localhost:3000`.
 
 4. **Clonar, construir y ejecutar (en la red del backend)**
 
-   > Si no usas la AMI `cloud.22` y no tienes Docker, sigue la sección
+   > Si no usas la AMI `Cloud9Ubuntu22` y no tienes Docker, sigue la sección
    > **"Alternativa: Ubuntu desde cero"** en el README de
-   > [finzen-app](https://github.com/UTEC-AII/finzen-app#alternativa-ubuntu-desde-cero-sin-la-ami-cloud22).
+   > [finzen-app](https://github.com/UTEC-AII/finzen-app#alternativa-ubuntu-desde-cero-sin-la-ami-cloud9ubuntu22).
 
    ```bash
    git clone https://github.com/UTEC-AII/finzen-webui.git
