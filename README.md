@@ -134,6 +134,10 @@ Abrir `http://localhost:3000`.
    - `22` (SSH) → `0.0.0.0/0` *(necesario para EC2 Instance Connect)*
    - `3000` (frontend) → `0.0.0.0/0` *(o `80` si publicas detrás de Nginx)*
 
+> **Red:** la **VPC por defecto** ya trae **Internet Gateway** y la **Route Table**
+> (`0.0.0.0/0 → IGW`) sobre subredes públicas, así que la instancia con **IP elástica**
+> tiene internet entrante y saliente sin crear nada extra (ni NAT Gateway).
+
 3. **Conectarse (sin SSH)**
    - Consola **EC2** → selecciona la instancia → **Connect** →
    - pestaña **EC2 Instance Connect** → **Connect**.
