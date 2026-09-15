@@ -14,6 +14,29 @@ interface Message {
   text: string;
 }
 
+// Escribe el texto letra por letra (efecto máquina de escribir).
+function Typewriter({ text, speed = 22 }: { text: string; speed?: number }) {
+  const [shown, setShown] = useState("");
+
+  useEffect(() => {
+    setShown("");
+    let index = 0;
+    const timer = setInterval(() => {
+      index += 1;
+      setShown(text.slice(0, index));
+      if (index >= text.length) clearInterval(timer);
+    }, speed);
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return (
+    <>
+      {shown}
+      <span className="typing-caret" />
+    </>
+  );
+}
+
 export default function AssistantPage() {
   const user = useUser();
   const { t } = useI18n();
@@ -21,20 +44,17 @@ export default function AssistantPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const shown: Message[] = messages.length
-    ? messages
-    : [{ role: "ai", text: t("assistant.greeting") }];
-
-  // Auto-scroll al último mensaje (como un chat real).
+  // Auto-scroll suave al último mensaje (sobre el contenedor, no la página).
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
   async function ask(question: string) {
     if (!user || !configured || !question.trim() || loading) return;
-    setMessages((prev) => [...(prev.length ? prev : shown), { role: "user", text: question }]);
+    setMessages((prev) => [...prev, { role: "user", text: question }]);
     setInput("");
     setLoading(true);
     try {
@@ -56,6 +76,8 @@ export default function AssistantPage() {
     ask(input);
   }
 
+  const empty = messages.length === 0;
+
   return (
     <div className="mx-auto flex h-[calc(100dvh-12rem)] max-w-3xl flex-col md:h-[78vh]">
       {!configured && (
@@ -70,35 +92,56 @@ export default function AssistantPage() {
         </div>
       )}
 
-      {/* Mensajes: sin recuadro, sobre el fondo negro */}
-      <div className="flex-1 space-y-5 overflow-y-auto px-1 py-2">
-        {shown.map((message, index) => (
-          <div
-            key={index}
-            className={cn("msg-in", message.role === "user" ? "flex justify-end" : "flex justify-start")}
-          >
-            {message.role === "user" ? (
-              <div className="max-w-[80%] rounded-3xl bg-surface-2 px-4 py-2.5 text-sm text-text">
-                {message.text}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth px-1 py-2">
+        {empty ? (
+          // Estado inicial: frase centrada con animación de tipeo (estilo ChatGPT).
+          <div className="flex h-full flex-col items-center justify-center px-4 text-center">
+            <span className="fade-up mb-6 grid h-12 w-12 place-items-center rounded-2xl bg-primary text-xl font-bold text-primary-fg">
+              F
+            </span>
+            <p className="fade-up max-w-md text-lg font-medium leading-relaxed text-text-soft">
+              <Typewriter key={t("assistant.greeting")} text={t("assistant.greeting")} />
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "msg-in",
+                  message.role === "user" ? "flex justify-end" : "flex justify-start",
+                )}
+              >
+                {message.role === "user" ? (
+                  <div className="max-w-[80%] rounded-3xl bg-surface-2 px-4 py-2.5 text-sm text-text">
+                    {message.text}
+                  </div>
+                ) : (
+                  <p className="max-w-[92%] whitespace-pre-wrap text-sm leading-relaxed text-text-soft">
+                    {message.text}
+                  </p>
+                )}
               </div>
-            ) : (
-              <p className="max-w-[92%] whitespace-pre-wrap text-sm leading-relaxed text-text-soft">
-                {message.text}
-              </p>
+            ))}
+
+            {loading && (
+              <div className="msg-in flex justify-start">
+                <div className="flex items-center gap-1 rounded-3xl bg-surface-2 px-4 py-3">
+                  <span className="typing-dot h-1.5 w-1.5 rounded-full bg-muted" />
+                  <span
+                    className="typing-dot h-1.5 w-1.5 rounded-full bg-muted"
+                    style={{ animationDelay: "0.16s" }}
+                  />
+                  <span
+                    className="typing-dot h-1.5 w-1.5 rounded-full bg-muted"
+                    style={{ animationDelay: "0.32s" }}
+                  />
+                </div>
+              </div>
             )}
           </div>
-        ))}
-
-        {loading && (
-          <div className="msg-in flex justify-start">
-            <div className="flex items-center gap-1 rounded-3xl bg-surface-2 px-4 py-3">
-              <span className="typing-dot h-1.5 w-1.5 rounded-full bg-muted" />
-              <span className="typing-dot h-1.5 w-1.5 rounded-full bg-muted" style={{ animationDelay: "0.16s" }} />
-              <span className="typing-dot h-1.5 w-1.5 rounded-full bg-muted" style={{ animationDelay: "0.32s" }} />
-            </div>
-          </div>
         )}
-        <div ref={bottomRef} />
       </div>
 
       {/* Input tipo ChatGPT */}
