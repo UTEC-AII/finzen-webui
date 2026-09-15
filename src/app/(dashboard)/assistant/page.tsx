@@ -79,7 +79,7 @@ export default function AssistantPage() {
   const empty = messages.length === 0;
 
   return (
-    <div className="mx-auto flex h-[calc(100dvh-12rem)] max-w-3xl flex-col md:h-[78vh]">
+    <div className="mx-auto flex h-[calc(100dvh-12rem)] max-w-3xl flex-col md:h-[calc(100dvh-8rem)]">
       {!configured && (
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
           <p className="text-xs text-muted">{t("assistant.configureInProfile")}</p>
@@ -92,7 +92,7 @@ export default function AssistantPage() {
         </div>
       )}
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto scroll-smooth px-1 py-2">
+      <div ref={scrollRef} className="chat-scroll flex-1 overflow-y-auto scroll-smooth px-1 py-2">
         {empty ? (
           // Estado inicial: frase centrada con animación de tipeo (estilo ChatGPT).
           <div className="flex h-full flex-col items-center justify-center px-4 text-center">
