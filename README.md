@@ -137,6 +137,10 @@ Abrir `http://localhost:3000`.
 > **Red:** la **VPC por defecto** ya trae **Internet Gateway** y la **Route Table**
 > (`0.0.0.0/0 → IGW`) sobre subredes públicas, así que la instancia con **IP elástica**
 > tiene internet entrante y saliente sin crear nada extra (ni NAT Gateway).
+>
+> **Almacenamiento y red Docker:** los datos persisten en **volúmenes Docker** sobre
+> el disco **EBS** de la instancia; y este frontend se conecta a los servicios por la
+> **red interna de Docker Compose** (por nombre de servicio), no por `localhost`.
 
 3. **Conectarse (sin SSH)**
    - Consola **EC2** → selecciona la instancia → **Connect** →
