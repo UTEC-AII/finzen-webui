@@ -15,22 +15,9 @@ interface Message {
   text: string;
 }
 
-const SUGGESTIONS = {
-  es: [
-    "¿En qué categoría gasto más?",
-    "¿Cuánto he gastado este mes?",
-    "¿Cuánto he recibido de ingresos?",
-  ],
-  en: [
-    "Which category do I spend the most on?",
-    "How much have I spent this month?",
-    "How much income have I received?",
-  ],
-};
-
 export default function AssistantPage() {
   const user = useUser();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const { configured } = useOpenAIKey();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -104,19 +91,6 @@ export default function AssistantPage() {
             </div>
           </div>
         )}
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {SUGGESTIONS[lang].map((suggestion) => (
-          <button
-            key={suggestion}
-            onClick={() => ask(suggestion)}
-            disabled={loading || !configured}
-            className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-text-soft transition hover:text-text disabled:opacity-40"
-          >
-            {suggestion}
-          </button>
-        ))}
       </div>
 
       <form onSubmit={onSubmit} className="mt-3 flex gap-2">
