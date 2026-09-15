@@ -37,6 +37,24 @@ function Typewriter({ text, speed = 22 }: { text: string; speed?: number }) {
   );
 }
 
+// El LLM responde con markdown básico; se renderiza la negrita (**texto**).
+function RichText({ text }: { text: string }) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return (
+    <>
+      {parts.map((part, index) =>
+        part.startsWith("**") && part.endsWith("**") ? (
+          <strong key={index} className="font-semibold text-text">
+            {part.slice(2, -2)}
+          </strong>
+        ) : (
+          <span key={index}>{part}</span>
+        ),
+      )}
+    </>
+  );
+}
+
 export default function AssistantPage() {
   const user = useUser();
   const { t } = useI18n();
@@ -119,7 +137,7 @@ export default function AssistantPage() {
                   </div>
                 ) : (
                   <p className="max-w-[92%] whitespace-pre-wrap text-sm leading-relaxed text-text-soft">
-                    {message.text}
+                    <RichText text={message.text} />
                   </p>
                 )}
               </div>
