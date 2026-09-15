@@ -128,7 +128,7 @@ const DICT: Record<Lang, Record<string, string>> = {
 
     "assistant.title": "Consulta inteligente",
     "assistant.greeting":
-      "¡Hola! Soy tu asistente de FinZen. Pregúntame lo que quieras sobre tus finanzas.",
+      "¡Hola! Soy FinZen, tu asistente financiero. Puedo ayudarte con tus ingresos, gastos y categorías. ¿Qué te gustaría saber?",
     "assistant.placeholder": "Escribe tu pregunta...",
     "assistant.send": "Enviar",
     "assistant.thinking": "FinZen IA está pensando...",
@@ -276,7 +276,7 @@ const DICT: Record<Lang, Record<string, string>> = {
 
     "assistant.title": "Smart query",
     "assistant.greeting":
-      "Hi! I'm your FinZen assistant. Ask me anything about your finances.",
+      "Hi! I'm FinZen, your financial assistant. I can help you with your income, expenses and categories. What would you like to know?",
     "assistant.placeholder": "Type your question...",
     "assistant.send": "Send",
     "assistant.thinking": "FinZen AI is thinking...",
