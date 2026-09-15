@@ -146,6 +146,8 @@ const DICT: Record<Lang, Record<string, string>> = {
     "assistant.goToProfile": "Ir a Mi perfil",
     "assistant.online": "Conectado a OpenAI",
     "assistant.offline": "Modo local (sin clave)",
+    "fab.newIncome": "Nuevo ingreso",
+    "fab.newExpense": "Nuevo gasto",
 
     "openai.title": "Clave de OpenAI",
     "openai.desc":
@@ -292,6 +294,8 @@ const DICT: Record<Lang, Record<string, string>> = {
     "assistant.goToProfile": "Go to My profile",
     "assistant.online": "Connected to OpenAI",
     "assistant.offline": "Local mode (no key)",
+    "fab.newIncome": "New income",
+    "fab.newExpense": "New expense",
 
     "openai.title": "OpenAI key",
     "openai.desc":
