@@ -5,6 +5,9 @@ interface ApiError extends Error {
   status?: number;
 }
 
+// Evita múltiples redirecciones simultáneas cuando varias peticiones dan 401.
+let redirectingToLogin = false;
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(path, {
     headers: { "Content-Type": "application/json" },
@@ -12,7 +15,17 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   });
 
   if (response.status === 401 && typeof window !== "undefined") {
-    window.location.href = "/login";
+    // Token inválido o expirado: se limpia la sesión (borra las cookies) antes de
+    // redirigir, para que el middleware no vuelva a mandar a /dashboard (evita el bucle).
+    if (!redirectingToLogin) {
+      redirectingToLogin = true;
+      try {
+        await fetch("/api/auth/logout", { method: "POST" });
+      } catch {
+        // Si falla, igual redirigimos.
+      }
+      window.location.href = "/login";
+    }
     throw new Error("Sesión expirada");
   }
 
