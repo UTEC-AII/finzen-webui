@@ -105,6 +105,12 @@ docker run -d --name finzen-webui \
 
 Abrir `http://localhost:3000`.
 
+Verificar:
+```bash
+docker ps                                                        # finzen-webui + los 5 del backend
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000   # 200
+```
+
 ## Variables de entorno
 
 | Variable | Descripción | Ejemplo |
@@ -182,6 +188,12 @@ Abrir `http://localhost:3000`.
    ```
 
 5. **Probar**: `http://<TU-IP-ELASTICA>` (puerto 80, servido por Nginx).
+
+   ```bash
+   docker ps                                                       # 6 contenedores: 4 micro + nginx + webui
+   curl -s -o /dev/null -w "%{http_code}\n" http://localhost/              # 200 (frontend vía Nginx)
+   curl -s http://localhost/api/ai/health                                 # {"status":"ok",...}
+   ```
 
 > **Mac Apple Silicon:** construye con `docker build --platform linux/amd64 -t finzen-webui .`
 > para que corra en EC2 (x86), o construye dentro de la instancia.
