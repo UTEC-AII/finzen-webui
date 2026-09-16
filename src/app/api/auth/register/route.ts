@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { TOKEN_COOKIE, USER_COOKIE } from "@/lib/constants";
+import { TOKEN_COOKIE, USER_COOKIE, isSecureRequest } from "@/lib/constants";
 
 // Registra al usuario y, si todo sale bien, inicia sesión automáticamente.
 export async function POST(request: Request) {
@@ -32,18 +32,19 @@ export async function POST(request: Request) {
 
   const data = await login.json();
   const response = NextResponse.json({ user: data.user, autoLogin: true });
+  const secure = isSecureRequest(request);
 
   response.cookies.set(TOKEN_COOKIE, data.access_token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
   });
   // Next codifica el valor de la cookie; no se debe codificar otra vez aquí.
   response.cookies.set(USER_COOKIE, JSON.stringify(data.user), {
     httpOnly: false,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
   });
 

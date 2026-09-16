@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { TOKEN_COOKIE, USER_COOKIE } from "@/lib/constants";
+import { TOKEN_COOKIE, USER_COOKIE, isSecureRequest } from "@/lib/constants";
 
 // Inicia sesión contra el user-service y guarda el JWT en una cookie httpOnly.
 export async function POST(request: Request) {
@@ -21,12 +21,13 @@ export async function POST(request: Request) {
 
   const data = await backend.json();
   const response = NextResponse.json({ user: data.user });
+  const secure = isSecureRequest(request);
 
   // El token va en cookie httpOnly (no accesible desde JavaScript).
   response.cookies.set(TOKEN_COOKIE, data.access_token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
   });
 
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
   response.cookies.set(USER_COOKIE, JSON.stringify(data.user), {
     httpOnly: false,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
   });
 
