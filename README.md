@@ -132,7 +132,7 @@ Abrir `http://localhost:3000`.
 
 2. **Security Group** (reglas de entrada)
    - `22` (SSH) → `0.0.0.0/0` *(necesario para EC2 Instance Connect)*
-   - `3000` (frontend) → `0.0.0.0/0` *(o `80` si publicas detrás de Nginx)*
+   - `80` (HTTP) → `0.0.0.0/0` *(Nginx sirve el frontend en `/` y las APIs en `/api/*`)*
 
 > **Red:** la **VPC por defecto** ya trae **Internet Gateway** y la **Route Table**
 > (`0.0.0.0/0 → IGW`) sobre subredes públicas, así que la instancia con **IP elástica**
@@ -148,9 +148,9 @@ Abrir `http://localhost:3000`.
 
 4. **Clonar, construir y ejecutar (en la red del backend)**
 
-   > Si no usas la AMI `Cloud9Ubuntu22` y no tienes Docker, sigue la sección
-   > **"Alternativa: Ubuntu desde cero"** en el README de
-   > [finzen-app](https://github.com/UTEC-AII/finzen-app#alternativa-ubuntu-desde-cero-sin-la-ami-cloud9ubuntu22).
+   > Antes de levantar el backend, libera el puerto 80 en la EC2
+   > (`sudo systemctl stop apache2`), o Nginx no arrancará. Ver la guía completa en
+   > [finzen-app](https://github.com/UTEC-AII/finzen-app#despliegue-en-aws-ec2).
 
    ```bash
    git clone https://github.com/UTEC-AII/finzen-webui.git
@@ -167,7 +167,7 @@ Abrir `http://localhost:3000`.
      finzen-webui
    ```
 
-5. **Probar**: `http://<TU-IP-ELASTICA>:3000`
+5. **Probar**: `http://<TU-IP-ELASTICA>` (puerto 80, servido por Nginx).
 
 > **Mac Apple Silicon:** construye con `docker build --platform linux/amd64 -t finzen-webui .`
 > para que corra en EC2 (x86), o construye dentro de la instancia.
