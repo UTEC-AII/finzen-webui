@@ -221,6 +221,9 @@ finzen-webui/
 
 - **Build se cuelga o falla (sin memoria)**: `next build` necesita más RAM que el 1 GB
   del `t3.micro`. Agrega **swap de 2 GB** antes de construir (ver Despliegue en AWS).
+- **Puerto 80 ocupado (Apache)**: la AMI `Cloud9Ubuntu22` trae Apache en el 80 y Nginx
+  también lo usa. Mira qué ocupa el puerto con `sudo ss -tlnp | grep :80` y detén Apache:
+  `sudo systemctl stop apache2 && sudo systemctl disable apache2`.
 - **No entra al dashboard tras iniciar sesión**: la cookie de sesión se marca `secure`
   solo si la petición llega por **HTTPS**; sobre HTTP funciona. Verifica en DevTools →
   Application → Cookies que exista `finzen_token`.
