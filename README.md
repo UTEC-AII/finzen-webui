@@ -151,6 +151,20 @@ Abrir `http://localhost:3000`.
    > Antes de levantar el backend, libera el puerto 80 en la EC2
    > (`sudo systemctl stop apache2`), o Nginx no arrancará. Ver la guía completa en
    > [finzen-app](https://github.com/UTEC-AII/finzen-app#despliegue-en-aws-ec2).
+   >
+   > **Memoria (t3.micro = 1 GB):** el `npm run build` de Next.js consume mucha RAM y
+   > puede colgarse o morir por falta de memoria (OOM). Agrega **swap** antes de construir:
+   >
+   > ```bash
+   > sudo fallocate -l 2G /swapfile
+   > sudo chmod 600 /swapfile
+   > sudo mkswap /swapfile
+   > sudo swapon /swapfile
+   > free -h      # debe mostrar ~2 GB de swap
+   > ```
+   >
+   > Alternativa: construye en tu equipo con `--platform linux/amd64`, súbela a Docker
+   > Hub y en la EC2 haz `docker pull` (no compila → no consume RAM).
 
    ```bash
    git clone https://github.com/UTEC-AII/finzen-webui.git
@@ -193,6 +207,13 @@ finzen-webui/
 
 ## Problemas conocidos
 
+- **Build se cuelga o falla (sin memoria)**: `next build` necesita más RAM que el 1 GB
+  del `t3.micro`. Agrega **swap de 2 GB** antes de construir (ver Despliegue en AWS).
+- **No entra al dashboard tras iniciar sesión**: la cookie de sesión se marca `secure`
+  solo si la petición llega por **HTTPS**; sobre HTTP funciona. Verifica en DevTools →
+  Application → Cookies que exista `finzen_token`.
+- **Tras reiniciar la instancia EC2**: los contenedores **no arrancan solos**. Vuelve a
+  levantarlos: `cd finzen-app && docker compose up -d` y `docker start finzen-webui`.
 - **Sesión expirada**: si el JWT caduca, el BFF redirige a `/login`.
 - **Asistente deshabilitado**: requiere configurar la **clave de OpenAI** en
   `/profile`.
