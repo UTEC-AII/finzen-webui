@@ -148,7 +148,7 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000   # 200
 > el disco **EBS** de la instancia; y este frontend se conecta a los servicios por la
 > **red interna de Docker Compose** (por nombre de servicio), no por `localhost`.
 
-3. **Conectarse (sin SSH)**
+3. **Conectar (sin SSH)**
    - Consola **EC2** → selecciona la instancia → **Connect** →
    - pestaña **EC2 Instance Connect** → **Connect**.
 
