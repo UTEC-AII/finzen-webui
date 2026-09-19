@@ -48,7 +48,7 @@ const DICT: Record<Lang, Record<string, string>> = {
     "login.register": "Regístrate",
     "login.error": "No se pudo iniciar sesión",
 
-    "register.title": "Registrar tu cuenta",
+    "register.title": "Crear tu cuenta",
     "register.subtitle": "Empieza a ordenar tus finanzas",
     "register.name": "Nombre",
     "register.namePlaceholder": "Tu nombre",
