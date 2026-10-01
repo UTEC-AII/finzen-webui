@@ -47,7 +47,13 @@ export default function RegisterPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      if (!response.ok) throw new Error(t("register.error"));
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        if (response.status === 409) {
+          throw new Error(t("register.emailExists"));
+        }
+        throw new Error(data.detail || t("register.error"));
+      }
       router.push("/dashboard");
       router.refresh();
     } catch (err) {

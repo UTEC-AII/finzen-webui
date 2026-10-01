@@ -93,6 +93,15 @@ input, select, textarea, button {
   font-family: inherit;
 }
 
+/* Ícono del selector de fecha visible en ambos temas. */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+html.light input[type="date"] {
+  color-scheme: light;
+}
+
 a {
   color: inherit;
 }

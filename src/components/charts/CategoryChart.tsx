@@ -43,11 +43,13 @@ export function CategoryChart({
           </Pie>
           <Tooltip
             contentStyle={{
-              background: "var(--surface)",
+              background: "var(--surface-3)",
               border: "1px solid var(--border)",
               borderRadius: 9,
-              color: "var(--text)",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
             }}
+            labelStyle={{ color: "var(--text-soft)" }}
+            itemStyle={{ color: "var(--text)" }}
             formatter={(value: number) => value.toFixed(2)}
           />
         </PieChart>
