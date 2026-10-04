@@ -64,6 +64,7 @@ const DICT: Record<Lang, Record<string, string>> = {
     "register.haveAccount": "¿Ya tienes cuenta?",
     "register.login": "Inicia sesión",
     "register.error": "No se pudo crear la cuenta",
+    "register.emailExists": "El correo ya está registrado",
 
     "dashboard.greeting": "Hola, {name}",
     "dashboard.hello": "Hola",
@@ -215,6 +216,7 @@ const DICT: Record<Lang, Record<string, string>> = {
     "register.haveAccount": "Already have an account?",
     "register.login": "Sign in",
     "register.error": "Could not create the account",
+    "register.emailExists": "Email already registered",
 
     "dashboard.greeting": "Hi, {name}",
     "dashboard.hello": "Hi",
