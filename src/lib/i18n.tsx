@@ -48,7 +48,7 @@ const DICT: Record<Lang, Record<string, string>> = {
     "login.register": "Regístrate",
     "login.error": "No se pudo iniciar sesión",
 
-    "register.title": "Registrar tu cuenta",
+    "register.title": "Crear tu cuenta",
     "register.subtitle": "Empieza a ordenar tus finanzas",
     "register.name": "Nombre",
     "register.namePlaceholder": "Tu nombre",
@@ -77,6 +77,8 @@ const DICT: Record<Lang, Record<string, string>> = {
     "dashboard.categoryDetail": "Detalle por categoría",
     "dashboard.noExpenses": "Aún no registras gastos.",
     "dashboard.noExpensesChart": "Sin gastos registrados.",
+    "dashboard.movementsByMonth": "Ingresos y gastos por mes",
+    "dashboard.noMovementsChart": "Sin movimientos registrados.",
     "dashboard.recent": "Últimos movimientos",
     "dashboard.noMovements": "Registra tu primer ingreso o gasto para verlos aquí.",
 
@@ -226,6 +228,8 @@ const DICT: Record<Lang, Record<string, string>> = {
     "dashboard.categoryDetail": "Category detail",
     "dashboard.noExpenses": "You haven't recorded expenses yet.",
     "dashboard.noExpensesChart": "No expenses recorded.",
+    "dashboard.movementsByMonth": "Income and expenses per month",
+    "dashboard.noMovementsChart": "No records yet.",
     "dashboard.recent": "Recent activity",
     "dashboard.noMovements": "Record your first income or expense to see it here.",
 

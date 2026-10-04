@@ -6,6 +6,7 @@ import { useState } from "react";
 import { HeaderControls } from "@/components/layout/HeaderControls";
 import { Button } from "@/components/ui/Button";
 import { Field, Input } from "@/components/ui/Field";
+import { Logo } from "@/components/ui/Logo";
 import { GITHUB_URL } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
 
@@ -43,6 +44,7 @@ export default function LoginPage() {
         <HeaderControls github={GITHUB_URL} />
       </div>
 
+      <Logo size={56} className="mb-3" />
       <h1 className="text-2xl font-bold">{t("login.title")}</h1>
       <p className="mb-7 mt-1 text-sm text-muted">{t("login.subtitle")}</p>
 

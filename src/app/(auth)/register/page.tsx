@@ -6,50 +6,11 @@ import { useEffect, useState } from "react";
 import { HeaderControls } from "@/components/layout/HeaderControls";
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select } from "@/components/ui/Field";
+import { Logo } from "@/components/ui/Logo";
 import { GITHUB_URL } from "@/lib/constants";
 import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
 import { DEFAULT_TIMEZONE, detectTimezone, TIMEZONES } from "@/lib/timezones";
-
-function EyeIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function EyeOffIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
-      <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
-      <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
-      <path d="m2 2 20 20" />
-    </svg>
-  );
-}
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -103,6 +64,7 @@ export default function RegisterPage() {
         <HeaderControls github={GITHUB_URL} />
       </div>
 
+      <Logo size={56} className="mb-3" />
       <h1 className="text-2xl font-bold">{t("register.title")}</h1>
       <p className="mb-7 mt-1 text-sm text-muted">{t("register.subtitle")}</p>
 
@@ -133,17 +95,47 @@ export default function RegisterPage() {
               placeholder={t("register.passwordPlaceholder")}
               minLength={6}
               required
-              className="pr-11"
+              className="pr-10"
             />
             <button
               type="button"
-              onClick={() => setShowPassword((visible) => !visible)}
               aria-label={showPassword ? t("register.hidePassword") : t("register.showPassword")}
-              title={showPassword ? t("register.hidePassword") : t("register.showPassword")}
-              aria-pressed={showPassword}
-              className="absolute inset-y-0 right-0 flex items-center px-3.5 text-muted transition hover:text-text"
+              onClick={() => setShowPassword((visible) => !visible)}
+              className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted transition hover:text-text"
             >
-              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              {showPassword ? (
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                  <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                  <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                  <line x1="2" x2="22" y1="2" y2="22" />
+                </svg>
+              ) : (
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
             </button>
           </div>
         </Field>

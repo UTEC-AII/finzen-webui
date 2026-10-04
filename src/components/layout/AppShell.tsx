@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { HeaderControls } from "@/components/layout/HeaderControls";
+import { Logo } from "@/components/ui/Logo";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/cn";
 import { GITHUB_URL } from "@/lib/constants";
@@ -109,7 +110,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="relative sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border-soft bg-[var(--header-bg)] px-4 py-2 backdrop-blur">
-        <Link href="/dashboard" title="FinZen" className="flex items-center">
+        <Link href="/dashboard" title="FinZen" className="flex items-center gap-2">
+          <Logo size={26} />
           <span className="wordmark text-2xl leading-none">FinZen</span>
         </Link>
 
