@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { HeaderControls } from "@/components/layout/HeaderControls";
+import { Logo } from "@/components/ui/Logo";
 import { GITHUB_URL } from "@/lib/constants";
 import { useI18n } from "@/lib/i18n";
 
@@ -21,6 +22,7 @@ export default function LandingPage() {
         <HeaderControls github={GITHUB_URL} />
       </div>
 
+      <Logo size={64} className="mb-4" />
       <h1 className="wordmark select-none text-7xl leading-none sm:text-8xl">FinZen</h1>
 
       <p className="mt-6 max-w-sm text-sm text-muted">{t("landing.tagline")}</p>

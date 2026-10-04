@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { CategoryChart } from "@/components/charts/CategoryChart";
+import { MonthlyChart } from "@/components/charts/MonthlyChart";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { useUser } from "@/hooks/useUser";
 import { api, endpoints } from "@/lib/api";
@@ -74,6 +74,28 @@ export default function DashboardPage() {
     .sort((a, b) => b.total - a.total);
 
   const maxCategory = byCategory[0]?.total ?? 1;
+
+  // Movimientos mensuales en la moneda principal (eje X: mes, eje Y: ingresos y gastos).
+  const monthLabel = new Intl.DateTimeFormat(locale, { month: "short" });
+  const monthly = Object.entries(
+    [...incomes, ...expenses]
+      .filter((item) => item.currency === mainCurrency)
+      .reduce<Record<string, { incomes: number; expenses: number }>>((acc, item) => {
+        const key = item.date.slice(0, 7);
+        const row = acc[key] ?? { incomes: 0, expenses: 0 };
+        const amount = toNumber(item.amount);
+        if ("type" in item) row.incomes += amount;
+        else row.expenses += amount;
+        acc[key] = row;
+        return acc;
+      }, {}),
+  )
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => ({
+      label: monthLabel.format(new Date(`${key}-01T00:00:00`)),
+      incomes: value.incomes,
+      expenses: value.expenses,
+    }));
 
   return (
     <div className="space-y-4">
@@ -152,10 +174,10 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardTitle>
-            {t("dashboard.expensesByCategory")}
+            {t("dashboard.movementsByMonth")}
             {totals.length > 1 ? ` · ${mainCurrency}` : ""}
           </CardTitle>
-          <CategoryChart data={byCategory} />
+          <MonthlyChart data={monthly} />
         </Card>
 
         <Card>
