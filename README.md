@@ -50,7 +50,7 @@ Navegador  ──►  Next.js (BFF)  ──►  Nginx  ──►  microservicios
 |---|---|
 | `/` | Bienvenida |
 | `/login`, `/register` | Autenticación |
-| `/dashboard` | Balance, gráfico de gastos por categoría y accesos directos |
+| `/dashboard` | Balance, gráfico mensual de ingresos y gastos y accesos directos |
 | `/incomes`, `/incomes/new`, `/incomes/[id]` | Ingresos |
 | `/expenses`, `/expenses/new`, `/expenses/[id]` | Gastos (con filtros) |
 | `/profile` | Edición de perfil y **clave de OpenAI** |
